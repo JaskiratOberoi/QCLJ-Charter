@@ -125,12 +125,14 @@ function Dashboard() {
 
   useGSAP(
     () => {
-      gsap.from('[data-tile]', { opacity: 0, y: 24, duration: 0.8, stagger: 0.05, ease: 'expo.out', delay: 0.15 })
+      // fromTo with explicit end values: this effect re-runs when the lot hydrates, and a second gsap.from would
+      // capture the half-faded tiles as its destination and leave them stuck at low opacity.
+      gsap.fromTo('[data-tile]', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.05, ease: 'expo.out', delay: 0.15, overwrite: 'auto', clearProps: 'opacity,transform' })
       ref.current!.querySelectorAll<SVGPolylineElement>('[data-spark]').forEach((pl, i) => {
         const len = pl.getTotalLength()
         gsap.fromTo(pl, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.4, delay: 0.3 + i * 0.04, ease: 'power2.out' })
       })
-      gsap.from('[data-cal]', { scale: 0.6, opacity: 0, duration: 0.5, stagger: { each: 0.012, from: 'start' }, ease: 'back.out(2)', delay: 0.2 })
+      gsap.fromTo('[data-cal]', { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, stagger: { each: 0.012, from: 'start' }, ease: 'back.out(2)', delay: 0.2, overwrite: 'auto', clearProps: 'opacity,transform' })
     },
     { scope: ref, dependencies: [month, lot.id] },
   )
