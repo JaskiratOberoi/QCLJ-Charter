@@ -50,16 +50,19 @@ export function StagedImport({ rows, source, onDone }: { rows: StagedRow[]; sour
   const levelOf = (r: StagedRow) => r.level ?? levelMap[r.sampleId ?? ''] ?? (lot ? levelFromSampleId(r.sampleId ?? '', lot.sampleIdPattern) : undefined)
 
   const existing = useMemo(() => new Set(ws.runs.map((r) => `${r.lotId}|${r.analyteId}|${r.level}|${r.date}|${r.time ?? ''}|${r.value}`)), [ws.runs])
+  /** Days that already hold an accepted result for the lot/test/level: a new row there is a repeat of that day. */
+  const savedDays = useMemo(() => new Set(ws.runs.filter((r) => !r.rejected).map((r) => `${r.lotId}|${r.analyteId}|${r.level}|${r.date}`)), [ws.runs])
 
   const staged = rows.map((r) => {
     const target = map[r.assay]
     const level = levelOf(r)
     const analyteId = target && !target.startsWith('__') ? target : undefined
-    let status: 'new' | 'dup' | 'unmapped' | 'skip' | 'nolevel' = 'new'
+    let status: 'new' | 'repeat' | 'dup' | 'unmapped' | 'skip' | 'nolevel' = 'new'
     if (target === '__skip') status = 'skip'
     else if (!level) status = 'nolevel'
     else if (!analyteId && target !== '__new') status = 'unmapped'
     else if (analyteId && existing.has(`${lotId}|${analyteId}|${level}|${r.date}|${r.time ?? ''}|${r.value}`)) status = 'dup'
+    else if (analyteId && savedDays.has(`${lotId}|${analyteId}|${level}|${r.date}`)) status = 'repeat'
     const t = analyteId && level ? getTarget(ws, lotId, analyteId, level) : undefined
     const z = t ? (r.value - t.mean) / t.sd : NaN
     return { r, level, analyteId, status, z }
@@ -99,6 +102,7 @@ export function StagedImport({ rows, source, onDone }: { rows: StagedRow[]; sour
     }
     if (supersede) markRepeats(toAdd)
     const res = addRuns(toAdd)
+    let superseded = 0
     if (supersede) {
       const touched = new Set(toAdd.map((r) => `${r.lotId}|${r.analyteId}|${r.level}|${r.date}`))
       const latest = useStore.getState().runs
@@ -110,11 +114,14 @@ export function StagedImport({ rows, source, onDone }: { rows: StagedRow[]; sour
       }
       for (const group of byKey.values())
         if (group.length > 1) {
-          group.sort((a, b) => (a.time ?? '').localeCompare(b.time ?? '') || a.createdAt - b.createdAt)
-          group.slice(0, -1).forEach((r) => updateRun(r.id, { rejected: true, note: r.note ?? 'Superseded by repeat' }))
+          group.sort(laterRun)
+          group.slice(0, -1).forEach((r) => {
+            superseded++
+            updateRun(r.id, { rejected: true, note: r.note ?? 'Superseded by repeat' })
+          })
         }
     }
-    onDone(`${res.added} results saved${res.duplicates ? `, ${res.duplicates} duplicates skipped` : ''}.`)
+    onDone(`${res.added} results saved${res.duplicates ? `, ${res.duplicates} duplicates skipped` : ''}${superseded ? `, ${superseded} earlier same-day results marked superseded` : ''}.`)
   }
 
   return (
@@ -169,14 +176,15 @@ export function StagedImport({ rows, source, onDone }: { rows: StagedRow[]; sour
 
       <div className="flex flex-wrap items-center gap-2">
         <Pill tone="ok">{counts.new ?? 0} new</Pill>
+        {counts.repeat ? <Pill tone="warn">{counts.repeat} repeat{supersede ? ' · earlier result of that day will be marked superseded' : ''}</Pill> : null}
         {counts.dup ? <Pill>{counts.dup} already saved</Pill> : null}
         {counts.nolevel ? <Pill tone="warn">{counts.nolevel} no level</Pill> : null}
         {counts.unmapped ? <Pill tone="warn">{counts.unmapped} unmapped</Pill> : null}
         {counts.skip ? <Pill>{counts.skip} ignored</Pill> : null}
         <div className="ml-auto flex gap-2">
           <Button variant="ghost" onClick={() => onDone('')}>Discard</Button>
-          <Button variant="primary" disabled={!lot || !(counts.new ?? 0)} onClick={commit}>
-            <CheckCircle size={16} weight="bold" /> Save {counts.new ?? 0} results
+          <Button variant="primary" disabled={!lot || !((counts.new ?? 0) + (counts.repeat ?? 0))} onClick={commit}>
+            <CheckCircle size={16} weight="bold" /> Save {(counts.new ?? 0) + (counts.repeat ?? 0)} results
           </Button>
         </div>
       </div>
@@ -202,6 +210,7 @@ export function StagedImport({ rows, source, onDone }: { rows: StagedRow[]; sour
                   <td className="max-w-[180px] truncate px-4 py-2 text-muted">{s.r.file}</td>
                   <td className="px-4 py-2">
                     {s.status === 'new' && <Pill tone="ok">New</Pill>}
+                    {s.status === 'repeat' && <Pill tone="warn">Repeat</Pill>}
                     {s.status === 'dup' && <Pill>Saved</Pill>}
                     {s.status === 'skip' && <Pill>Ignored</Pill>}
                     {(s.status === 'nolevel' || s.status === 'unmapped') && <Pill tone="warn"><WarningCircle size={12} /> {s.status === 'nolevel' ? 'No level' : 'Unmapped'}</Pill>}
@@ -217,6 +226,14 @@ export function StagedImport({ rows, source, onDone }: { rows: StagedRow[]; sour
   )
 }
 
+/**
+ * Same-day order: by time when both rows carry one, otherwise the row saved later is the repeat.
+ * A pasted row without a time must never count as older than the instrument's timed result.
+ */
+function laterRun(a: Run, b: Run) {
+  return (a.time && b.time ? a.time.localeCompare(b.time) : 0) || a.createdAt - b.createdAt
+}
+
 function markRepeats(rows: Omit<Run, 'id' | 'createdAt'>[]) {
   const by = new Map<string, typeof rows>()
   for (const r of rows) {
@@ -225,7 +242,7 @@ function markRepeats(rows: Omit<Run, 'id' | 'createdAt'>[]) {
   }
   for (const g of by.values())
     if (g.length > 1) {
-      g.sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''))
+      g.sort((a, b) => (a.time && b.time ? a.time.localeCompare(b.time) : 0))
       g.slice(0, -1).forEach((r) => {
         r.rejected = true
         r.note = r.note ?? 'Superseded by repeat'

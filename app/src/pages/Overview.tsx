@@ -168,7 +168,8 @@ function Dashboard() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3">
           {ws.analytes.map((a) => {
             const vs = monthV.filter((v) => v.analyteId === a.id)
-            const tone = vs.some((v) => v.severity === 'reject') ? 'bad' : vs.length ? 'warn' : 'ok'
+            const hasRuns = lot.chartLevels.some((l) => monthSummary(ws, lot.id, a.id, l, month).n > 0)
+            const tone = vs.some((v) => v.severity === 'reject') ? 'bad' : vs.length ? 'warn' : hasRuns ? 'ok' : 'neutral'
             return (
               <Card key={a.id} data-tile className="group cursor-pointer p-5 transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.25)]" onClick={() => nav('/charts', { state: { analyte: a.id } })}>
                 <div className="flex items-start justify-between">
@@ -176,7 +177,7 @@ function Dashboard() {
                     <div className="text-[15px] font-semibold tracking-[-0.01em]">{a.name}</div>
                     <div className="text-[12px] text-faint">{a.unit}</div>
                   </div>
-                  <Pill tone={tone}>{tone === 'ok' ? 'In control' : tone === 'bad' ? 'Reject' : 'Warning'}</Pill>
+                  <Pill tone={tone}>{tone === 'ok' ? 'In control' : tone === 'bad' ? 'Reject' : tone === 'warn' ? 'Warning' : 'No results'}</Pill>
                 </div>
                 <Spark ws={ws} lotId={lot.id} analyteId={a.id} levels={lot.chartLevels} month={month} />
                 <div className="mt-3 flex gap-5 text-[12px]">
