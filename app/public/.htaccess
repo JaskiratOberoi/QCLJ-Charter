@@ -1,0 +1,13 @@
+# qclj.stellarinfomatica.com lives in its own folder (public_html/qclj) on Hostinger.
+# Rules are relative to this folder, so they cannot affect the other subdomains.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.html [L]
+
+<FilesMatch "\.(js|css|woff2|mjs)$">
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+<FilesMatch "^(index\.html|sw\.js)$">
+  Header set Cache-Control "no-cache"
+</FilesMatch>

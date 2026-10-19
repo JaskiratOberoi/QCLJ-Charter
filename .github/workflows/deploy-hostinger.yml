@@ -1,0 +1,58 @@
+name: Deploy frontend to Hostinger
+# qclj.stellarinfomatica.com → Hostinger folder public_html/qclj (its own subdomain folder).
+# The lab record is served from the lab's own server at api-qclj.stellarinfomatica.com.
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', '.github/workflows/deploy-hostinger.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-qclj
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Build
+        env:
+          VITE_DATA_URL: https://api-qclj.stellarinfomatica.com/data/noble.json
+        run: |
+          npm ci
+          npm run build
+          # The record is fetched from api-qclj; do not ship a second copy to Hostinger.
+          rm -rf dist/data
+
+      # The FTP account's home IS /public_html and is shared with the other
+      # subdomain folders (sense/, biosentry/, api-sense/, prenatal-screener/ ...).
+      # server-dir is pinned to qclj/ and clean-slate stays OFF, so this job can
+      # only ever add, update or remove files it uploaded itself inside qclj/.
+      - name: Sync to public_html/qclj
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          local-dir: ./app/dist/
+          server-dir: qclj/
+          state-name: .ftp-deploy-sync-qclj.json
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+          log-level: standard

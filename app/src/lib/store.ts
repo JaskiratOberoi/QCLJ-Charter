@@ -261,7 +261,10 @@ export function useActiveLot() {
 /** Set once the default lab's bundled record has been loaded, so "Erase all" is not undone on the next visit. */
 const SEEDED = 'qclj-seeded'
 
-const fetchLabData = async () => (await (await fetch('/data/noble.json', { cache: 'no-cache' })).json()) as Workspace
+/** Where the bundled lab record lives. The Hostinger build points this at api-qclj (served from the lab's own server). */
+const LAB_DATA_URL: string = import.meta.env.VITE_DATA_URL || '/data/noble.json'
+
+const fetchLabData = async () => (await (await fetch(LAB_DATA_URL, { cache: 'no-cache' })).json()) as Workspace
 
 /** Noble Diagnostic Centre's IQC record, built by scripts/build-lab-data.py. */
 export async function loadLabData() {
