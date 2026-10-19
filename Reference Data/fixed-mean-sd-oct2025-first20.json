@@ -1,0 +1,28 @@
+{
+  "_source": "First 20 calendar days of OCTOBER 2025 BIO RAD L1/L2 (01–20 Oct 2025, including holidays 02 and 20 Oct). Mean matches fixed-means-oct2025-first20.json. SD is sample SD of those 20 points and was never applied to the LJ charts.",
+  "lot": "Bio-Rad Lyphochek Immunoassay Plus Control 40471 (L1) / 40472 (L2), exp 31/01/2028",
+  "instrument": "Snibe Maglumi X3",
+  "n": 20,
+  "L1": {
+    "HCG/B-HCG": ["8.6025", "0.8177"],
+    "FSH": ["7.541", "0.6790"],
+    "E2": ["86.183", "8.9418"],
+    "T3": ["0.700", "0.0709"],
+    "PRL": ["7.0675", "0.5949"],
+    "TEST": ["124.26", "11.5082"],
+    "T4": ["6.149", "0.5927"],
+    "LH": ["1.7915", "0.1398"],
+    "TSH": ["0.499", "0.0422"]
+  },
+  "L2": {
+    "HCG/B-HCG": ["22.8125", "2.1016"],
+    "FSH": ["25.322", "2.2285"],
+    "E2": ["319.35", "29.5680"],
+    "T3": ["1.8345", "0.1698"],
+    "PRL": ["21.0355", "2.0071"],
+    "TEST": ["300.025", "30.6940"],
+    "T4": ["10.9715", "1.0727"],
+    "LH": ["24.9675", "2.1533"],
+    "TSH": ["5.7455", "0.5220"]
+  }
+}
