@@ -28,7 +28,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_DATA_URL: https://api-qclj.stellarinfomatica.com/data/noble.json
+          VITE_API_BASE: https://api-qclj.stellarinfomatica.com
         run: |
           npm ci
           npm run build

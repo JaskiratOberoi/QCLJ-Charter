@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { create } from 'zustand'
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware'
 import { summarize, valuesInRange } from './stats'
+import { API_BASE, authHeaders, hasAuth, signOut } from './auth'
 import { activeLab, activeLabId, DEFAULT_LAB, renameLab, workspaceKey } from './labs'
 import type {
   Analyte, Capa, ControlLot, Exclusion, InsertRange, Instrument, LabProfile, Run, Target, WestgardConfig, Workspace,
@@ -77,6 +78,23 @@ interface Actions {
 }
 
 export type Store = Workspace & Actions
+
+/**
+ * Seeds the default lab from the bundled record on first sign-in (once per browser),
+ * or upgrades an older saved workspace; names a freshly added lab. Safe to call repeatedly.
+ */
+export async function ensureSeeded() {
+  const s = useStore.getState()
+  const empty = !s.lots.length && !s.runs.length
+  if (activeLabId() === DEFAULT_LAB.id) {
+    let ok = true
+    if (empty && !localStorage.getItem(SEEDED)) ok = await loadLabData().then(() => true).catch(() => false)
+    else if (!empty) await upgradeDefaultLab().catch(() => undefined)
+    if (ok) localStorage.setItem(SEEDED, '1')
+  } else if (empty && !s.lab.organization) {
+    useStore.setState((x) => ({ lab: { ...x.lab, organization: activeLab().name } }))
+  }
+}
 
 export const useStore = create<Store>()(
   persist(
@@ -203,15 +221,9 @@ export const useStore = create<Store>()(
         const { hydrated: _h, ...rest } = s
         return Object.fromEntries(Object.entries(rest).filter(([, v]) => typeof v !== 'function')) as unknown as Store
       },
-      onRehydrateStorage: () => async (s) => {
-        const empty = !s?.lots.length && !s?.runs.length
-        if (activeLabId() === DEFAULT_LAB.id) {
-          if (empty && !localStorage.getItem(SEEDED)) await loadLabData().catch(() => undefined)
-          else if (!empty) await upgradeDefaultLab().catch(() => undefined)
-          localStorage.setItem(SEEDED, '1')
-        } else if (empty && !s?.lab.organization) {
-          useStore.setState((x) => ({ lab: { ...x.lab, organization: activeLab().name } }))
-        }
+      onRehydrateStorage: () => async () => {
+        // The record needs the lab login, so a signed-out browser seeds after sign-in (LoginPage calls ensureSeeded).
+        if (hasAuth()) await ensureSeeded()
         useStore.setState({ hydrated: true })
       },
     },
@@ -261,10 +273,18 @@ export function useActiveLot() {
 /** Set once the default lab's bundled record has been loaded, so "Erase all" is not undone on the next visit. */
 const SEEDED = 'qclj-seeded'
 
-/** Where the bundled lab record lives. The Hostinger build points this at api-qclj (served from the lab's own server). */
-const LAB_DATA_URL: string = import.meta.env.VITE_DATA_URL || '/data/noble.json'
+/** The lab record on the lab server (nginx Basic auth); same-origin in dev, api-qclj on Hostinger. */
+const LAB_DATA_URL = `${API_BASE}/data/noble.json`
 
-const fetchLabData = async () => (await (await fetch(LAB_DATA_URL, { cache: 'no-cache' })).json()) as Workspace
+async function fetchLabData(): Promise<Workspace> {
+  const res = await fetch(LAB_DATA_URL, { cache: 'no-cache', headers: authHeaders() })
+  if (res.status === 401) {
+    signOut()
+    throw new Error('Signed out: the lab password has changed.')
+  }
+  if (!res.ok) throw new Error(`Lab record unavailable (${res.status})`)
+  return (await res.json()) as Workspace
+}
 
 /** Noble Diagnostic Centre's IQC record, built by scripts/build-lab-data.py. */
 export async function loadLabData() {

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  /** Absolute URL of the lab record JSON; defaults to /data/noble.json when unset. */
-  readonly VITE_DATA_URL?: string
+  /** Origin of the lab server (api-qclj). Empty in dev, where the vite server stands in. */
+  readonly VITE_API_BASE?: string
 }

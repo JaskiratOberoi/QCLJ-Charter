@@ -1,10 +1,11 @@
 import { useGSAP } from '@gsap/react'
 import {
-  CaretLeft, CaretRight, ChartLineUp, ListBullets, PencilSimpleLine, ShieldWarning, SlidersHorizontal, SquaresFour, Table,
+  CaretLeft, CaretRight, ChartLineUp, ListBullets, SignOut, PencilSimpleLine, ShieldWarning, SlidersHorizontal, SquaresFour, Table,
 } from '@phosphor-icons/react'
 import gsap from 'gsap'
 import { useEffect, useMemo, useRef } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { signOut, useAuth } from '../lib/auth'
 import { addMonths, monthLongLabel } from '../lib/dates'
 import { lotMonths } from '../lib/stats'
 import { useActiveLot, useStore, useWorkspace } from '../lib/store'
@@ -32,6 +33,7 @@ export function Shell() {
   const lot = useActiveLot()
   const ws = useWorkspace()
   const { month, setMonth, bleed } = useUi()
+  const labId = useAuth((s) => s.labId)
   const months = useMemo(() => (lot ? lotMonths(ws, lot.id) : []), [ws, lot])
 
   // Jump to the latest month with data when the lot changes or data first arrives.
@@ -139,6 +141,14 @@ export function Shell() {
               <CaretRight size={14} weight="bold" />
             </button>
           </div>
+          <button
+            onClick={() => { if (confirm('Sign out of QCLJ Studio on this browser? Results you entered stay saved here.')) signOut() }}
+            className="grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-surface text-muted transition-colors hover:border-ink/40 hover:text-ink"
+            aria-label={labId ? `Sign out (${labId})` : 'Sign out'}
+            title={labId ? `Signed in as ${labId} · Sign out` : 'Sign out'}
+          >
+            <SignOut size={16} />
+          </button>
         </header>
         <main ref={main} className="scroll-thin min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
           {bleed ? (

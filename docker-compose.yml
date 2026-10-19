@@ -1,5 +1,6 @@
-# Production: QCLJ Studio served as a static SPA on 127.0.0.1:3160 (host tunnel fronts it).
-# Redeploy: docker compose up -d --build
+# Production: QCLJ Studio record + static fallback on 127.0.0.1:3160, fronted by the
+# host Caddy as api-qclj.stellarinfomatica.com. Redeploy: docker compose up -d --build
+# Logins live in deploy/htpasswd (git-ignored, see deploy/htpasswd.example).
 services:
   web:
     build: ./app
@@ -8,3 +9,5 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:3160:80"
+    volumes:
+      - ./deploy/htpasswd:/etc/nginx/htpasswd:ro
