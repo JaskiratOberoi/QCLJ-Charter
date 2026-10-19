@@ -291,6 +291,9 @@ export async function loadLabData() {
   useStore.getState().replaceWorkspace(await fetchLabData())
 }
 
+/** First bytes of the QCDart PNG that shipped as the report logo until 2026-10-20. */
+const LEGACY_REPORT_LOGO_PREFIX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxgAAADYCAYAAABofUVNAAEAAElEQVR4nOz9Z5AcaZomiD0uQq'
+
 /**
  * Brings a default-lab workspace saved by an earlier version up to the bundled record:
  * the old demo dataset is swapped for the record (keeping results and CAPAs the user added),
@@ -300,7 +303,9 @@ async function upgradeDefaultLab() {
   const s = useStore.getState()
   const isOldDemo = s.runs.some((r) => r.source === 'demo')
   const oldCopyright = /Copyright 2026 QCLJ Studio/.test(s.lab.copyright)
-  if (!isOldDemo && s.lab.reportLogoDataUrl && !oldCopyright) return
+  // The record used to carry the QCDart logo; a workspace still holding it takes the QCLJ wordmark.
+  const oldReportLogo = !!s.lab.reportLogoDataUrl && s.lab.reportLogoDataUrl.startsWith(LEGACY_REPORT_LOGO_PREFIX)
+  if (!isOldDemo && s.lab.reportLogoDataUrl && !oldCopyright && !oldReportLogo) return
   const record = await fetchLabData()
   if (isOldDemo) {
     const ownRuns = s.runs.filter((r) => r.source !== 'demo')
@@ -314,7 +319,7 @@ async function upgradeDefaultLab() {
     return
   }
   s.setLab({
-    reportLogoDataUrl: s.lab.reportLogoDataUrl ?? record.lab.reportLogoDataUrl,
+    reportLogoDataUrl: oldReportLogo ? record.lab.reportLogoDataUrl : (s.lab.reportLogoDataUrl ?? record.lab.reportLogoDataUrl),
     logoDataUrl: s.lab.logoDataUrl ?? record.lab.logoDataUrl,
     ...(oldCopyright ? { copyright: record.lab.copyright } : {}),
   })
