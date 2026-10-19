@@ -1,0 +1,10 @@
+# Production: QCLJ Studio served as a static SPA on 127.0.0.1:3160 (host tunnel fronts it).
+# Redeploy: docker compose up -d --build
+services:
+  web:
+    build: ./app
+    image: qclj-charter-web
+    container_name: qclj-charter-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3160:80"
