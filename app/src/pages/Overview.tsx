@@ -67,7 +67,7 @@ function Welcome() {
             <span className="block overflow-hidden"><span data-w="line" className="block text-white/45">straight from the analyser printout.</span></span>
           </h1>
           <p data-w="fade" className="mt-7 max-w-2xl text-[17px] leading-relaxed text-white/60">
-            Drop your instrument's result PDFs or type results in. QCLJ Studio files them by control lot and level, applies Westgard multirules and prints signed-ready LJ, CV and cumulative reports on A4.
+            Drop your instrument's result PDFs or type results in. Meridian files them by control lot and level, applies Westgard multirules and prints signed-ready LJ, CV and cumulative reports on A4.
           </p>
           <div data-w="fade" className="mt-10 flex flex-wrap gap-3">
             {activeLabId() === DEFAULT_LAB.id ? (

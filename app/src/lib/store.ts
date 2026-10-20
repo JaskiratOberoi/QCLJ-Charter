@@ -25,8 +25,8 @@ export function emptyWorkspace(): Workspace {
       branch: '',
       address: '',
       contact: '',
-      reportBrand: 'QCLJ Studio',
-      copyright: '© Copyright 2025 QCLJ Studio. All rights reserved.',
+      reportBrand: 'Stellar Meridian',
+      copyright: '© Copyright 2026 Stellar Infomatica. All rights reserved.',
       capaDocNo: '',
     },
     instruments: [],
@@ -291,8 +291,11 @@ export async function loadLabData() {
   useStore.getState().replaceWorkspace(await fetchLabData())
 }
 
-/** First bytes of the QCDart PNG that shipped as the report logo until 2026-10-20. */
-const LEGACY_REPORT_LOGO_PREFIX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxgAAADYCAYAAABofUVNAAEAAElEQVR4nOz9Z5AcaZomiD0uQq'
+/** First bytes of the report logos that shipped before the Meridian wordmark: the QCDart PNG, then the short-lived QCLJ PNG (both 2026-10-20). */
+const LEGACY_REPORT_LOGO_PREFIXES = [
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxgAAADYCAYAAABofUVNAAEAAElEQVR4nOz9Z5AcaZomiD0uQq',
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwU5f3/v9/ZHC',
+]
 
 /**
  * Brings a default-lab workspace saved by an earlier version up to the bundled record:
@@ -302,10 +305,12 @@ const LEGACY_REPORT_LOGO_PREFIX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgA
 async function upgradeDefaultLab() {
   const s = useStore.getState()
   const isOldDemo = s.runs.some((r) => r.source === 'demo')
-  const oldCopyright = /Copyright 2026 QCLJ Studio/.test(s.lab.copyright)
-  // The record used to carry the QCDart logo; a workspace still holding it takes the QCLJ wordmark.
-  const oldReportLogo = !!s.lab.reportLogoDataUrl && s.lab.reportLogoDataUrl.startsWith(LEGACY_REPORT_LOGO_PREFIX)
-  if (!isOldDemo && s.lab.reportLogoDataUrl && !oldCopyright && !oldReportLogo) return
+  // Branding from before the Stellar Meridian rename (QCLJ Studio brand line and copyright).
+  const oldCopyright = /QCLJ Studio/.test(s.lab.copyright)
+  const oldBrand = s.lab.reportBrand === 'QCLJ Studio'
+  // The record used to carry the QCDart logo, then briefly a QCLJ wordmark; either takes the Meridian wordmark.
+  const oldReportLogo = !!s.lab.reportLogoDataUrl && LEGACY_REPORT_LOGO_PREFIXES.some((p) => s.lab.reportLogoDataUrl!.startsWith(p))
+  if (!isOldDemo && s.lab.reportLogoDataUrl && !oldCopyright && !oldBrand && !oldReportLogo) return
   const record = await fetchLabData()
   if (isOldDemo) {
     const ownRuns = s.runs.filter((r) => r.source !== 'demo')
@@ -322,5 +327,6 @@ async function upgradeDefaultLab() {
     reportLogoDataUrl: oldReportLogo ? record.lab.reportLogoDataUrl : (s.lab.reportLogoDataUrl ?? record.lab.reportLogoDataUrl),
     logoDataUrl: s.lab.logoDataUrl ?? record.lab.logoDataUrl,
     ...(oldCopyright ? { copyright: record.lab.copyright } : {}),
+    ...(oldBrand ? { reportBrand: record.lab.reportBrand } : {}),
   })
 }

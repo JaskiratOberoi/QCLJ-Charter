@@ -45,7 +45,7 @@ export function LoginPage() {
         <div data-in className="relative flex items-center gap-2.5">
           <Mark />
           <div className="leading-tight">
-            <div className="text-[15px] font-semibold tracking-[-0.02em]">QCLJ Studio</div>
+            <div className="text-[15px] font-semibold tracking-[-0.02em]">Stellar Meridian</div>
             <div className="text-[11px] text-white/45">Internal quality control</div>
           </div>
         </div>
@@ -59,13 +59,13 @@ export function LoginPage() {
             Daily controls, Westgard rules, monthly CV and CAPA for your analysers. Sign in with your lab ID to open the lab's record.
           </p>
         </div>
-        <div data-in className="relative text-[11px] text-white/35">© QCLJ Studio</div>
+        <div data-in className="relative text-[11px] text-white/35">© Stellar Infomatica · Meridian</div>
       </aside>
 
       <main className="flex flex-1 items-center justify-center px-6 py-12">
         <form onSubmit={submit} className="w-full max-w-[380px]" aria-busy={busy}>
           <div data-in className="mb-8 lg:hidden">
-            <div className="text-[15px] font-semibold tracking-[-0.02em]">QCLJ Studio</div>
+            <div className="text-[15px] font-semibold tracking-[-0.02em]">Stellar Meridian</div>
             <div className="text-[12px] text-muted">Internal quality control</div>
           </div>
           <h2 data-in className="text-[28px] font-semibold tracking-[-0.025em]">Sign in</h2>

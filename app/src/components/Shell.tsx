@@ -68,7 +68,7 @@ export function Shell() {
           <div className="flex items-center gap-2.5">
             <Mark />
             <div className="leading-tight">
-              <div className="text-[15px] font-semibold tracking-[-0.02em]">QCLJ Studio</div>
+              <div className="text-[15px] font-semibold tracking-[-0.02em]">Stellar Meridian</div>
               <div className="text-[11px] text-white/45">Internal quality control</div>
             </div>
           </div>
@@ -142,7 +142,7 @@ export function Shell() {
             </button>
           </div>
           <button
-            onClick={() => { if (confirm('Sign out of QCLJ Studio on this browser? Results you entered stay saved here.')) signOut() }}
+            onClick={() => { if (confirm('Sign out of Stellar Meridian on this browser? Results you entered stay saved here.')) signOut() }}
             className="grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-surface text-muted transition-colors hover:border-ink/40 hover:text-ink"
             aria-label={labId ? `Sign out (${labId})` : 'Sign out'}
             title={labId ? `Signed in as ${labId} · Sign out` : 'Sign out'}
@@ -165,11 +165,13 @@ export function Shell() {
 }
 
 export function Mark({ size = 30 }: { size?: number }) {
+  // Meridian: a star plotted on the mean line, inside its ±2 SD limits.
   return (
     <svg width={size} height={size} viewBox="0 0 30 30" fill="none">
-      <rect width="30" height="30" rx="9" fill="#2f5bff" />
-      <path d="M6 19.5 10.5 13l4 5 4.5-9.5L24 16" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="19" cy="8.5" r="2" fill="#fff" />
+      <rect width="30" height="30" rx="9" fill="#0f766e" />
+      <path d="M6 9.6h18M6 20.4h18" stroke="#fff" strokeOpacity={0.38} strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M6 15h18" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      <path d="M15 8.6l1.75 4.65L21.4 15l-4.65 1.75L15 21.4l-1.75-4.65L8.6 15l4.65-1.75z" fill="#fff" />
     </svg>
   )
 }
