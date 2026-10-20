@@ -44,7 +44,7 @@ export function LoginPage() {
         <div className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-accent/35 blur-[110px]" />
         <div className="pointer-events-none absolute -right-24 -bottom-32 h-80 w-80 rounded-full bg-[#8f6bff]/20 blur-[100px]" />
         <div data-in className="relative flex items-center gap-2.5">
-          <Mark />
+          <Mark size={34} />
           <div className="leading-tight">
             <div className="text-[15px] font-semibold tracking-[-0.02em]">Zenith-Q</div>
             <div className="text-[11px] text-white/45">Elevating laboratory quality</div>
@@ -69,7 +69,7 @@ export function LoginPage() {
       <main className="flex flex-1 items-center justify-center px-6 py-12">
         <form onSubmit={submit} className="w-full max-w-[380px]" aria-busy={busy}>
           <div data-in className="mb-8 flex items-center gap-2.5 lg:hidden">
-            <Mark size={26} />
+            <Mark size={30} tone="dark" />
             <div className="leading-tight">
               <div className="text-[15px] font-semibold tracking-[-0.02em]">Zenith-Q</div>
               <div className="text-[12px] text-muted">Elevating laboratory quality</div>

@@ -109,7 +109,7 @@ export function ZenithArc({ className, animated = false }: { className?: string;
       />
       <circle data-s="flare" cx={CX} cy={CY - R} r={26} fill="#8f6bff" fillOpacity={0.35} style={animated ? undefined : { display: 'none' }} />
       <g data-s="star" transform={animated ? undefined : `translate(${CX} ${CY - R}) scale(1.02)`}>
-        <path d="M0-19l5 13.8L18.8 0 5 5 0 19-5 5-18.8 0-5-5z" fill="#fff" />
+        <path d="M0-19L5.6-5.6 19 0 5.6 5.6 0 19-5.6 5.6-19 0-5.6-5.6Z" fill="#fff" />
         <circle r={3.2} fill="#8f6bff" />
       </g>
     </svg>

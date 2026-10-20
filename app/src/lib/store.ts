@@ -291,11 +291,12 @@ export async function loadLabData() {
   useStore.getState().replaceWorkspace(await fetchLabData())
 }
 
-/** First bytes of the report logos that shipped before the Meridian wordmark: the QCDart PNG, then the short-lived QCLJ and Meridian PNGs (2026-10-20/21). */
+/** First bytes of the report logos that shipped before the Z monogram: the QCDart PNG, then the short-lived QCLJ, Meridian and first Zenith-Q tile PNGs (2026-10-20/21). */
 const LEGACY_REPORT_LOGO_PREFIXES = [
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxgAAADYCAYAAABofUVNAAEAAElEQVR4nOz9Z5AcaZomiD0uQq',
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwU5f3/v9/ZHC',
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwU5fnHn2c2By',
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwcZf3/v9/Zzd',
 ]
 
 /**

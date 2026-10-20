@@ -5,7 +5,7 @@ const PURPLE = '#6d4fd6'
 
 /**
  * Logo slot in the report header: the report logo, else the lab logo, else the Zenith-Q wordmark
- * (star at the top of its arc, "Zenith-Q", and the company line), drawn to the slot height.
+ * (the Z monogram with the star at its zenith, "Zenith-Q", and the company line), drawn to the slot height.
  */
 export function ReportLogo({ lab, x, y, w, h }: { lab: LabProfile; x: number; y: number; w: number; h: number }) {
   const href = lab.reportLogoDataUrl ?? lab.logoDataUrl
@@ -16,24 +16,22 @@ export function ReportLogo({ lab, x, y, w, h }: { lab: LabProfile; x: number; y:
 /** Same composition as public/brand/zenith-q-logo.png, as vector: right-aligned inside the slot. */
 export function ZenithWordmark({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
   const u = h / 13.5
-  const m = 10.8 * u
-  const total = m + 1.9 * u + 34.6 * u
+  const m = 12.6 * u
+  const total = m + 1.0 * u + 32 * u
   const left = x + w - Math.min(total, w)
   const my = y + (h - m) / 2
-  const sc = m / 30
-  const tx = left + m + 1.9 * u
+  const sc = m / 40
+  const tx = left + m + 1.0 * u
   return (
     <g>
       <g transform={`translate(${left} ${my}) scale(${sc})`}>
-        <rect width={30} height={30} rx={9} fill={PURPLE} />
-        <path d="M6 22.5h18" stroke="#fff" strokeWidth={2} strokeLinecap="round" />
-        <path d="M7.5 22.5a7.5 7.5 0 0 1 15 0" stroke="#fff" strokeOpacity={0.38} strokeWidth={1.4} strokeLinecap="round" fill="none" />
-        <path d="M15 6.2l1.6 4.2 4.2 1.6-4.2 1.6L15 17.8l-1.6-4.2-4.2-1.6 4.2-1.6z" fill="#fff" />
+        <path d="M7 8h18L7 32h30" stroke={PURPLE} strokeWidth={3.6} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <path d="M31 2.8l1.5 3.5L36 7.8l-3.5 1.5L31 12.8l-1.5-3.5L26 7.8l3.5-1.5z" fill={PURPLE} />
       </g>
-      <text x={tx} y={my + m * 0.64} fontSize={7.2 * u} fontWeight={800} fill={NAVY} letterSpacing={-0.18 * u}>
+      <text x={tx} y={y + h * 0.56} fontSize={7.6 * u} fontWeight={600} fill={NAVY} letterSpacing={-0.23 * u}>
         Zenith-Q
       </text>
-      <text x={tx + 0.15 * u} y={my + m * 0.98} fontSize={2.35 * u} fontWeight={600} fill={PURPLE} letterSpacing={0.28 * u}>
+      <text x={tx + 0.2 * u} y={y + h * 0.83} fontSize={2.3 * u} fontWeight={500} fill={PURPLE} letterSpacing={0.37 * u}>
         STELLAR INFOMATICA
       </text>
     </g>

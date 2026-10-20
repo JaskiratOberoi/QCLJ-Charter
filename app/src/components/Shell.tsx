@@ -66,7 +66,7 @@ export function Shell() {
         <div className="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-accent/30 blur-[90px]" />
         <div className="relative px-6 pt-7 pb-8">
           <div className="flex items-center gap-2.5">
-            <Mark />
+            <Mark size={34} />
             <div className="leading-tight">
               <div className="text-[15px] font-semibold tracking-[-0.02em]">Zenith-Q</div>
               <div className="text-[11px] text-white/45">Elevating laboratory quality</div>
@@ -164,14 +164,17 @@ export function Shell() {
   )
 }
 
-export function Mark({ size = 30 }: { size?: number }) {
-  // Zenith-Q: a star at the top of its arc above the horizon line.
+/**
+ * Zenith-Q monogram: a bold Z whose top stroke ends in the star at its zenith; the long bottom stroke is the horizon.
+ * `tone` picks the ink (white on dark surfaces, purple on light); `tile` adds the purple square behind it.
+ */
+export function Mark({ size = 30, tone = 'light', tile = false }: { size?: number; tone?: 'light' | 'dark'; tile?: boolean }) {
+  const ink = tile || tone === 'light' ? '#fff' : '#6d4fd6'
   return (
-    <svg width={size} height={size} viewBox="0 0 30 30" fill="none">
-      <rect width="30" height="30" rx="9" fill="#6d4fd6" />
-      <path d="M6 22.5h18" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-      <path d="M7.5 22.5a7.5 7.5 0 0 1 15 0" stroke="#fff" strokeOpacity={0.38} strokeWidth="1.4" strokeLinecap="round" fill="none" />
-      <path d="M15 6.2l1.6 4.2 4.2 1.6-4.2 1.6L15 17.8l-1.6-4.2-4.2-1.6 4.2-1.6z" fill="#fff" />
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      {tile && <rect width="40" height="40" rx="11" fill="#6d4fd6" />}
+      <path d="M7 8h18L7 32h30" stroke={ink} strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M31 2.8l1.5 3.5L36 7.8l-3.5 1.5L31 12.8l-1.5-3.5L26 7.8l3.5-1.5z" fill={ink} />
     </svg>
   )
 }
