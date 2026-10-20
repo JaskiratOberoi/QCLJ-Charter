@@ -68,8 +68,8 @@ export function Shell() {
           <div className="flex items-center gap-2.5">
             <Mark />
             <div className="leading-tight">
-              <div className="text-[15px] font-semibold tracking-[-0.02em]">Stellar Meridian</div>
-              <div className="text-[11px] text-white/45">Internal quality control</div>
+              <div className="text-[15px] font-semibold tracking-[-0.02em]">Zenith-Q</div>
+              <div className="text-[11px] text-white/45">Elevating laboratory quality</div>
             </div>
           </div>
         </div>
@@ -142,7 +142,7 @@ export function Shell() {
             </button>
           </div>
           <button
-            onClick={() => { if (confirm('Sign out of Stellar Meridian on this browser? Results you entered stay saved here.')) signOut() }}
+            onClick={() => { if (confirm('Sign out of Zenith-Q on this browser? Results you entered stay saved here.')) signOut() }}
             className="grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-surface text-muted transition-colors hover:border-ink/40 hover:text-ink"
             aria-label={labId ? `Sign out (${labId})` : 'Sign out'}
             title={labId ? `Signed in as ${labId} · Sign out` : 'Sign out'}
@@ -165,13 +165,13 @@ export function Shell() {
 }
 
 export function Mark({ size = 30 }: { size?: number }) {
-  // Meridian: a star plotted on the mean line, inside its ±2 SD limits.
+  // Zenith-Q: a star at the top of its arc above the horizon line.
   return (
     <svg width={size} height={size} viewBox="0 0 30 30" fill="none">
-      <rect width="30" height="30" rx="9" fill="#0f766e" />
-      <path d="M6 9.6h18M6 20.4h18" stroke="#fff" strokeOpacity={0.38} strokeWidth="1.4" strokeLinecap="round" />
-      <path d="M6 15h18" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-      <path d="M15 8.6l1.75 4.65L21.4 15l-4.65 1.75L15 21.4l-1.75-4.65L8.6 15l4.65-1.75z" fill="#fff" />
+      <rect width="30" height="30" rx="9" fill="#6d4fd6" />
+      <path d="M6 22.5h18" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      <path d="M7.5 22.5a7.5 7.5 0 0 1 15 0" stroke="#fff" strokeOpacity={0.38} strokeWidth="1.4" strokeLinecap="round" fill="none" />
+      <path d="M15 6.2l1.6 4.2 4.2 1.6-4.2 1.6L15 17.8l-1.6-4.2-4.2-1.6 4.2-1.6z" fill="#fff" />
     </svg>
   )
 }

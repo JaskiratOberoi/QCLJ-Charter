@@ -3,6 +3,7 @@ import { ArrowRight } from '@phosphor-icons/react'
 import gsap from 'gsap'
 import { useRef, useState, type FormEvent } from 'react'
 import { Mark } from '../components/Shell'
+import { ZenithArc } from '../components/Splash'
 import { Button, Field, Input } from '../components/ui'
 import { signIn } from '../lib/auth'
 import { ensureSeeded } from '../lib/store'
@@ -40,33 +41,39 @@ export function LoginPage() {
   return (
     <div ref={root} className="flex h-full">
       <aside className="grain relative hidden w-[46%] flex-col justify-between overflow-hidden bg-night p-12 text-white lg:flex">
-        <div className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-accent/30 blur-[110px]" />
-        <div className="pointer-events-none absolute -right-24 -bottom-32 h-80 w-80 rounded-full bg-accent/15 blur-[100px]" />
+        <div className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-accent/35 blur-[110px]" />
+        <div className="pointer-events-none absolute -right-24 -bottom-32 h-80 w-80 rounded-full bg-[#8f6bff]/20 blur-[100px]" />
         <div data-in className="relative flex items-center gap-2.5">
           <Mark />
           <div className="leading-tight">
-            <div className="text-[15px] font-semibold tracking-[-0.02em]">Stellar Meridian</div>
-            <div className="text-[11px] text-white/45">Internal quality control</div>
+            <div className="text-[15px] font-semibold tracking-[-0.02em]">Zenith-Q</div>
+            <div className="text-[11px] text-white/45">Elevating laboratory quality</div>
           </div>
         </div>
         <div className="relative">
+          <div data-in>
+            <ZenithArc className="mb-6 w-[220px] opacity-90" />
+          </div>
           <h1 data-in className="text-[44px] leading-[1.02] font-semibold tracking-[-0.03em]">
-            Levey-Jennings,
+            Elevating
             <br />
-            <span className="text-white/45">without the spreadsheet.</span>
+            <span className="text-white/45">laboratory quality.</span>
           </h1>
           <p data-in className="mt-5 max-w-sm text-[14px] leading-relaxed text-white/55">
             Daily controls, Westgard rules, monthly CV and CAPA for your analysers. Sign in with your lab ID to open the lab's record.
           </p>
         </div>
-        <div data-in className="relative text-[11px] text-white/35">© Stellar Infomatica · Meridian</div>
+        <div data-in className="relative text-[11px] text-white/35">© Stellar Infomatica · Zenith-Q</div>
       </aside>
 
       <main className="flex flex-1 items-center justify-center px-6 py-12">
         <form onSubmit={submit} className="w-full max-w-[380px]" aria-busy={busy}>
-          <div data-in className="mb-8 lg:hidden">
-            <div className="text-[15px] font-semibold tracking-[-0.02em]">Stellar Meridian</div>
-            <div className="text-[12px] text-muted">Internal quality control</div>
+          <div data-in className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <Mark size={26} />
+            <div className="leading-tight">
+              <div className="text-[15px] font-semibold tracking-[-0.02em]">Zenith-Q</div>
+              <div className="text-[12px] text-muted">Elevating laboratory quality</div>
+            </div>
           </div>
           <h2 data-in className="text-[28px] font-semibold tracking-[-0.025em]">Sign in</h2>
           <p data-in className="mt-1.5 text-[13.5px] text-muted">Use the lab ID and password issued for your laboratory.</p>

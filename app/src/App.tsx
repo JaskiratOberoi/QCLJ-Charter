@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { PrintProvider } from './components/print'
 import { Shell } from './components/Shell'
+import { shouldShowSplash, Splash } from './components/Splash'
 import { useAuth } from './lib/auth'
 import { useStore } from './lib/store'
 import { LoginPage } from './pages/Login'
@@ -15,10 +17,25 @@ import { SetupPage } from './pages/Setup'
 export default function App() {
   const hydrated = useStore((s) => s.hydrated)
   const signedIn = useAuth((s) => !!s.cred)
-  if (!signedIn) return <LoginPage />
-  if (!hydrated) return <div className="grid h-full place-items-center text-sm text-muted">Opening workspace…</div>
+  const [splash, setSplash] = useState(shouldShowSplash)
+  const overlay = splash ? <Splash onDone={() => setSplash(false)} /> : null
+  if (!signedIn)
+    return (
+      <>
+        {overlay}
+        <LoginPage />
+      </>
+    )
+  if (!hydrated)
+    return (
+      <>
+        {overlay}
+        <div className="grid h-full place-items-center text-sm text-muted">Opening workspace…</div>
+      </>
+    )
   return (
     <PrintProvider>
+      {overlay}
       <BrowserRouter>
         <Routes>
           <Route element={<Shell />}>

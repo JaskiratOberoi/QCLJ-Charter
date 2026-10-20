@@ -15,7 +15,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLBut
         className={cx(
           'inline-flex items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition-[background,color,box-shadow,transform] duration-300 ease-[var(--ease-out-expo)] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40',
           size === 'sm' ? 'h-8 px-3.5 text-[13px]' : 'h-10 px-5 text-sm',
-          variant === 'primary' && 'bg-accent text-white shadow-[0_8px_20px_-8px_rgba(15,118,110,0.65)] hover:bg-[#0b5f59]',
+          variant === 'primary' && 'bg-accent text-white shadow-[0_8px_20px_-8px_rgba(109,79,214,0.7)] hover:bg-[#5b3fc4]',
           variant === 'dark' && 'bg-ink text-white hover:bg-ink-2',
           variant === 'outline' && 'border border-line-2 bg-surface text-ink hover:border-ink/40',
           variant === 'ghost' && 'text-ink-2 hover:bg-ink/5',

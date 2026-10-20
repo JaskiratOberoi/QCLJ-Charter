@@ -24,7 +24,7 @@ APP = Path(__file__).resolve().parent.parent
 REF = APP.parent / "Reference Data"
 OUT = APP / "public" / "data" / "noble.json"
 LOGO = Path("/Users/jas/Work/NABL 2026/app/public/brand/ndc-logo.png")
-REPORT_LOGO = APP / "public" / "brand" / "meridian-logo.png"  # Stellar Meridian wordmark (replaced the QCDart logo 2026-10-20)
+REPORT_LOGO = APP / "public" / "brand" / "zenith-q-logo.png"  # Zenith-Q wordmark (replaced the QCDart logo 2026-10-20)
 CORRECTION = REF / "With error" / "IQC Correction Maglumi 2026.pdf"
 
 MONTHS = [

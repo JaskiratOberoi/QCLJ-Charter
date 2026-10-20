@@ -393,7 +393,7 @@ function DataTab() {
     if (!f) return
     try {
       const ws = JSON.parse(await f.text())
-      if (!ws.runs || !ws.lots) throw new Error('Not a Meridian backup')
+      if (!ws.runs || !ws.lots) throw new Error('Not a Zenith-Q backup')
       s.replaceWorkspace(ws)
       alert(`Restored ${ws.runs.length} results.`)
     } catch (e) {
