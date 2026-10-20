@@ -291,13 +291,13 @@ export async function loadLabData() {
   useStore.getState().replaceWorkspace(await fetchLabData())
 }
 
-/** First bytes of the report logos that shipped before the Z monogram: the QCDart PNG, then the short-lived QCLJ, Meridian and first Zenith-Q tile PNGs (2026-10-20/21). */
-const LEGACY_REPORT_LOGO_PREFIXES = [
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxgAAADYCAYAAABofUVNAAEAAElEQVR4nOz9Z5AcaZomiD0uQq',
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwU5f3/v9/ZHC',
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwU5fnHn2c2By',
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKQAAAFECAYAAAAZX+b1AAAQAElEQVR4AeydCXwcZf3/v9/Zzd',
-]
+/**
+ * Data-URL lengths of the report logos that shipped before the solid Z monogram: the QCDart PNG, then the
+ * short-lived QCLJ, Meridian, Zenith-Q tile and stroked-Z PNGs (2026-10-20/21). Length identifies them
+ * reliably (the PNGs share the same header bytes), and a lab's own upload will not collide on an exact length.
+ */
+const LEGACY_REPORT_LOGO_LENGTHS = new Set([121666, 54550, 58594, 59698, 56654])
+const isLegacyReportLogo = (url?: string) => !!url && url.startsWith('data:image/png;base64,') && LEGACY_REPORT_LOGO_LENGTHS.has(url.length)
 
 /**
  * Brings a default-lab workspace saved by an earlier version up to the bundled record:
@@ -311,7 +311,7 @@ async function upgradeDefaultLab() {
   const oldCopyright = /QCLJ Studio/.test(s.lab.copyright)
   const oldBrand = s.lab.reportBrand === 'QCLJ Studio' || s.lab.reportBrand === 'Stellar Meridian'
   // The record used to carry the QCDart logo, then briefly a QCLJ wordmark; any of them takes the Zenith-Q wordmark.
-  const oldReportLogo = !!s.lab.reportLogoDataUrl && LEGACY_REPORT_LOGO_PREFIXES.some((p) => s.lab.reportLogoDataUrl!.startsWith(p))
+  const oldReportLogo = isLegacyReportLogo(s.lab.reportLogoDataUrl)
   if (!isOldDemo && s.lab.reportLogoDataUrl && !oldCopyright && !oldBrand && !oldReportLogo) return
   const record = await fetchLabData()
   if (isOldDemo) {

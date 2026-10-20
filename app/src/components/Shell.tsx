@@ -165,16 +165,16 @@ export function Shell() {
 }
 
 /**
- * Zenith-Q monogram: a bold Z whose top stroke ends in the star at its zenith; the long bottom stroke is the horizon.
- * `tone` picks the ink (white on dark surfaces, purple on light); `tile` adds the purple square behind it.
+ * Zenith-Q monogram: a solid geometric Z with the star locked onto its top-right tip, the zenith.
+ * tone picks the ink (white on dark surfaces, purple on light); tile adds the purple square behind it.
  */
 export function Mark({ size = 30, tone = 'light', tile = false }: { size?: number; tone?: 'light' | 'dark'; tile?: boolean }) {
   const ink = tile || tone === 'light' ? '#fff' : '#6d4fd6'
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
       {tile && <rect width="40" height="40" rx="11" fill="#6d4fd6" />}
-      <path d="M7 8h18L7 32h30" stroke={ink} strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M31 2.8l1.5 3.5L36 7.8l-3.5 1.5L31 12.8l-1.5-3.5L26 7.8l3.5-1.5z" fill={ink} />
+      <path d="M6 8h23v5.5L15.5 28H34v6H6v-5.5L19.5 14H6z" fill={ink} />
+      <path d="M33.5 1.1l1.72 4.68L39.9 7.5l-4.68 1.72L33.5 13.9l-1.72-4.68L27.1 7.5l4.68-1.72z" fill={ink} />
     </svg>
   )
 }
